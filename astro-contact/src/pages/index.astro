@@ -1,0 +1,131 @@
+---
+import '../styles/global.css'
+
+// Defaults to a sandbox placeholder so nothing reaches production by accident.
+const endpoint =
+  import.meta.env.PUBLIC_FORMROOST_ENDPOINT ?? 'https://formroost.com/s/v1/sandbox/fpub_REPLACE_ME'
+
+const fields = [
+  { name: 'name', label: 'Name', type: 'text', autocomplete: 'name' },
+  { name: 'email', label: 'Email', type: 'email', autocomplete: 'email' },
+] as const
+const input =
+  'mt-1 block w-full rounded-lg border border-slate-300 px-3 py-2 focus:border-orange-500 focus:ring-2 focus:ring-orange-500/30 focus:outline-none aria-invalid:border-red-500'
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Contact us</title>
+  </head>
+  <body class="min-h-screen bg-slate-100 px-4 py-16 text-slate-900 antialiased">
+    <main class="mx-auto max-w-lg rounded-2xl bg-white p-8 shadow-sm ring-1 ring-slate-200">
+      <h1 class="text-2xl font-semibold tracking-tight">Contact us</h1>
+      <p class="mt-2 text-sm text-slate-600">We usually reply within one business day.</p>
+
+      <form id="contact" action={endpoint} method="post" class="mt-8 space-y-5">
+        {
+          fields.map((f) => (
+            <div>
+              <label for={f.name} class="block text-sm font-medium">{f.label}</label>
+              <input id={f.name} name={f.name} type={f.type} autocomplete={f.autocomplete} required class={input} />
+              <p data-error-for={f.name} class="mt-1 text-sm text-red-700" />
+            </div>
+          ))
+        }
+        <div>
+          <label for="message" class="block text-sm font-medium">Message</label>
+          <textarea id="message" name="message" rows="5" required class={input}></textarea>
+          <p data-error-for="message" class="mt-1 text-sm text-red-700"></p>
+        </div>
+
+        <!-- Anti-spam: honeypot (hidden from people) and render timestamp. -->
+        <div class="absolute -left-[9999px] h-px w-px overflow-hidden" aria-hidden="true">
+          <label for="_gotcha">Leave this field empty</label>
+          <input id="_gotcha" name="_gotcha" type="text" tabindex="-1" autocomplete="off" />
+        </div>
+        <input type="hidden" name="_fr_started_at" />
+
+        <button type="submit" class="w-full rounded-lg bg-orange-600 px-4 py-2.5 font-medium text-white hover:bg-orange-700 disabled:opacity-60">
+          Send message
+        </button>
+        <p
+          id="status"
+          role="status"
+          aria-live="polite"
+          hidden
+          class="rounded-lg px-3 py-2 text-sm ring-1 data-[tone=error]:bg-red-50 data-[tone=error]:text-red-900 data-[tone=error]:ring-red-200 data-[tone=info]:bg-slate-50 data-[tone=info]:ring-slate-200 data-[tone=success]:bg-emerald-50 data-[tone=success]:text-emerald-900 data-[tone=success]:ring-emerald-200"
+        >
+        </p>
+      </form>
+    </main>
+
+    <script>
+      type Problem = {
+        code?: string
+        title?: string
+        detail?: string
+        requestId?: string
+        errors?: { path: string; code: string; message: string }[]
+      }
+
+      // Progressive enhancement: without JS the form posts natively and FormRoost renders a result page.
+      const form = document.querySelector<HTMLFormElement>('#contact')!
+      const status = document.querySelector<HTMLParagraphElement>('#status')!
+      const button = form.querySelector<HTMLButtonElement>('button[type="submit"]')!
+      const startedAt = form.elements.namedItem('_fr_started_at') as HTMLInputElement
+      startedAt.value = String(Date.now())
+
+      const show = (text: string, tone: 'info' | 'success' | 'error') => {
+        status.textContent = text
+        status.dataset.tone = tone
+        status.hidden = false
+      }
+
+      form.addEventListener('submit', async (event) => {
+        event.preventDefault()
+        form.querySelectorAll('[aria-invalid]').forEach((el) => el.removeAttribute('aria-invalid'))
+        form.querySelectorAll('[data-error-for]').forEach((el) => (el.textContent = ''))
+        button.disabled = true
+        show('Sending…', 'info')
+
+        const body: Record<string, unknown> = Object.fromEntries(new FormData(form))
+        // FormRoost reads `_fr_started_at` as Unix milliseconds; send a number.
+        body._fr_started_at = Number(startedAt.value)
+
+        try {
+          const response = await fetch(form.action, {
+            method: 'POST',
+            credentials: 'omit',
+            headers: { 'content-type': 'application/json', accept: 'application/json' },
+            body: JSON.stringify(body),
+          })
+          if (response.status === 201) {
+            const receipt: { receiptId: string } = await response.json()
+            form.reset()
+            startedAt.value = String(Date.now())
+            show(`Thanks! We got your message. Reference: ${receipt.receiptId}`, 'success')
+            return
+          }
+          // RFC 9457 problem+json: branch on `code`, show `detail`, keep `requestId` for support.
+          const problem: Problem | null = await response.json().catch(() => null)
+          const text = problem?.detail ?? problem?.title ?? `Request failed (HTTP ${response.status}).`
+          show(problem?.requestId ? `${text} (Request ID: ${problem.requestId})` : text, 'error')
+          for (const issue of problem?.errors ?? []) {
+            const name = issue.path.replace(/^\//, '').split('/')[0]
+            const field = name ? form.elements.namedItem(name) : null
+            if (!(field instanceof HTMLElement)) continue
+            field.setAttribute('aria-invalid', 'true')
+            const hint = form.querySelector(`[data-error-for="${name}"]`)
+            if (hint) hint.textContent = issue.message
+          }
+        } catch {
+          show('Network error. Check your connection and try again.', 'error')
+        } finally {
+          button.disabled = false
+        }
+      })
+    </script>
+  </body>
+</html>
