@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Request a free quote — Local Service Starter</title>
+    <!-- Tailwind's browser build is for prototypes. Use the Tailwind CLI for production. -->
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4.3.5"></script>
+    <style type="text/tailwindcss">
+      [data-tone='success'] { @apply bg-emerald-50 text-emerald-900 ring-emerald-200; }
+      [data-tone='error'] { @apply bg-red-50 text-red-900 ring-red-200; }
+      [data-tone='info'] { @apply bg-slate-50 text-slate-700 ring-slate-200; }
+      [aria-invalid='true'] { @apply border-red-500 ring-red-500; }
+    </style>
+  </head>
+  <body class="min-h-screen bg-stone-100 px-4 py-14 text-stone-900 antialiased">
+    <main class="mx-auto max-w-xl rounded-2xl bg-white p-8 shadow-sm ring-1 ring-stone-200">
+      <p class="text-xs font-semibold tracking-wider text-orange-600 uppercase">Free estimate</p>
+      <h1 class="mt-2 text-2xl font-semibold tracking-tight">Request a free quote</h1>
+      <p class="mt-2 text-sm text-stone-600">
+        Tell us about the job and we will get back to you within one business day.
+      </p>
+
+      <!-- Replace fpub_REPLACE_ME with your FormRoost sandbox ID. Switch to /production/ after publishing. -->
+      <form
+        data-formroost
+        action="https://formroost.com/s/v1/sandbox/fpub_REPLACE_ME"
+        method="post"
+        class="mt-8 space-y-5"
+      >
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="name" class="block text-sm font-medium">Full name</label>
+            <input id="name" name="name" required autocomplete="name"
+              class="mt-1 block w-full rounded-lg border border-stone-300 px-3 py-2 focus:border-orange-500 focus:ring-2 focus:ring-orange-500/30 focus:outline-none" />
+            <p data-error-for="name" class="mt-1 text-sm text-red-700"></p>
+          </div>
+          <div>
+            <label for="phone" class="block text-sm font-medium">Phone (optional)</label>
+            <input id="phone" name="phone" type="tel" autocomplete="tel"
+              class="mt-1 block w-full rounded-lg border border-stone-300 px-3 py-2 focus:border-orange-500 focus:ring-2 focus:ring-orange-500/30 focus:outline-none" />
+            <p data-error-for="phone" class="mt-1 text-sm text-red-700"></p>
+          </div>
+        </div>
+
+        <div>
+          <label for="email" class="block text-sm font-medium">Email</label>
+          <input id="email" name="email" type="email" required autocomplete="email"
+            class="mt-1 block w-full rounded-lg border border-stone-300 px-3 py-2 focus:border-orange-500 focus:ring-2 focus:ring-orange-500/30 focus:outline-none" />
+          <p data-error-for="email" class="mt-1 text-sm text-red-700"></p>
+        </div>
+
+        <div>
+          <label for="service" class="block text-sm font-medium">Service needed</label>
+          <select id="service" name="service" required
+            class="mt-1 block w-full rounded-lg border border-stone-300 bg-white px-3 py-2 focus:border-orange-500 focus:ring-2 focus:ring-orange-500/30 focus:outline-none">
+            <option value="">Choose a service…</option>
+            <option value="installation">New installation</option>
+            <option value="repair">Repair or troubleshooting</option>
+            <option value="maintenance">Seasonal maintenance</option>
+            <option value="other">Other request</option>
+          </select>
+          <p data-error-for="service" class="mt-1 text-sm text-red-700"></p>
+        </div>
+
+        <div>
+          <label for="message" class="block text-sm font-medium">Project details</label>
+          <textarea id="message" name="message" rows="4" required
+            placeholder="Share your neighborhood, timeline, and what needs doing…"
+            class="mt-1 block w-full rounded-lg border border-stone-300 px-3 py-2 focus:border-orange-500 focus:ring-2 focus:ring-orange-500/30 focus:outline-none"></textarea>
+          <p data-error-for="message" class="mt-1 text-sm text-red-700"></p>
+        </div>
+
+        <!-- Anti-spam: honeypot (hidden from people) and render timestamp. -->
+        <div class="absolute -left-[9999px] h-px w-px overflow-hidden" aria-hidden="true">
+          <label for="_gotcha">Leave this field empty</label>
+          <input id="_gotcha" name="_gotcha" type="text" tabindex="-1" autocomplete="off" />
+        </div>
+        <input type="hidden" name="_fr_started_at" />
+
+        <button type="submit"
+          class="w-full rounded-lg bg-orange-600 px-4 py-2.5 font-medium text-white hover:bg-orange-700 disabled:opacity-60">
+          Request quote
+        </button>
+        <p data-status role="status" aria-live="polite" hidden class="rounded-lg px-3 py-2 text-sm ring-1"></p>
+      </form>
+    </main>
+    <script src="formroost.js" defer></script>
+  </body>
+</html>

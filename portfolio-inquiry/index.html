@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Book a shoot — Creative Portfolio Starter</title>
+    <!-- Tailwind's browser build is for prototypes. Use the Tailwind CLI for production. -->
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4.3.5"></script>
+    <style type="text/tailwindcss">
+      [data-tone='success'] { @apply bg-emerald-50 text-emerald-900 ring-emerald-200; }
+      [data-tone='error'] { @apply bg-red-50 text-red-900 ring-red-200; }
+      [data-tone='info'] { @apply bg-slate-50 text-slate-700 ring-slate-200; }
+      [aria-invalid='true'] { @apply border-red-500 ring-red-500; }
+    </style>
+  </head>
+  <body class="min-h-screen bg-amber-50/40 px-4 py-14 text-stone-900 antialiased">
+    <main class="mx-auto max-w-xl rounded-2xl bg-white p-8 shadow-sm ring-1 ring-stone-200">
+      <p class="text-xs font-semibold tracking-wider text-orange-600 uppercase">Bookings</p>
+      <h1 class="mt-2 text-2xl font-semibold tracking-tight">Inquire about a project or shoot</h1>
+      <p class="mt-2 text-sm text-stone-600">
+        Share your preferred date and a few notes so I can confirm availability.
+      </p>
+
+      <!-- Replace fpub_REPLACE_ME with your FormRoost sandbox ID. Switch to /production/ after publishing. -->
+      <form
+        data-formroost
+        action="https://formroost.com/s/v1/sandbox/fpub_REPLACE_ME"
+        method="post"
+        class="mt-8 space-y-5"
+      >
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="name" class="block text-sm font-medium">Name</label>
+            <input id="name" name="name" required autocomplete="name"
+              class="mt-1 block w-full rounded-lg border border-stone-300 px-3 py-2 focus:border-orange-500 focus:ring-2 focus:ring-orange-500/30 focus:outline-none" />
+            <p data-error-for="name" class="mt-1 text-sm text-red-700"></p>
+          </div>
+          <div>
+            <label for="email" class="block text-sm font-medium">Email</label>
+            <input id="email" name="email" type="email" required autocomplete="email"
+              class="mt-1 block w-full rounded-lg border border-stone-300 px-3 py-2 focus:border-orange-500 focus:ring-2 focus:ring-orange-500/30 focus:outline-none" />
+            <p data-error-for="email" class="mt-1 text-sm text-red-700"></p>
+          </div>
+        </div>
+
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="preferredDate" class="block text-sm font-medium">Target date (optional)</label>
+            <input id="preferredDate" name="preferredDate" type="date"
+              class="mt-1 block w-full rounded-lg border border-stone-300 px-3 py-2 focus:border-orange-500 focus:ring-2 focus:ring-orange-500/30 focus:outline-none" />
+            <p data-error-for="preferredDate" class="mt-1 text-sm text-red-700"></p>
+          </div>
+          <div>
+            <label for="budget" class="block text-sm font-medium">Budget range</label>
+            <select id="budget" name="budget"
+              class="mt-1 block w-full rounded-lg border border-stone-300 bg-white px-3 py-2 focus:border-orange-500 focus:ring-2 focus:ring-orange-500/30 focus:outline-none">
+              <option value="under-1k">Under $1,000</option>
+              <option value="1k-3k">$1,000 – $3,000</option>
+              <option value="3k-plus">$3,000+</option>
+            </select>
+            <p data-error-for="budget" class="mt-1 text-sm text-red-700"></p>
+          </div>
+        </div>
+
+        <div>
+          <label for="notes" class="block text-sm font-medium">Project notes</label>
+          <textarea id="notes" name="notes" rows="4" required
+            class="mt-1 block w-full rounded-lg border border-stone-300 px-3 py-2 focus:border-orange-500 focus:ring-2 focus:ring-orange-500/30 focus:outline-none"></textarea>
+          <p data-error-for="notes" class="mt-1 text-sm text-red-700"></p>
+        </div>
+
+        <!-- Anti-spam: honeypot (hidden from people) and render timestamp. -->
+        <div class="absolute -left-[9999px] h-px w-px overflow-hidden" aria-hidden="true">
+          <label for="_gotcha">Leave this field empty</label>
+          <input id="_gotcha" name="_gotcha" type="text" tabindex="-1" autocomplete="off" />
+        </div>
+        <input type="hidden" name="_fr_started_at" />
+
+        <button type="submit"
+          class="w-full rounded-lg bg-orange-600 px-4 py-2.5 font-medium text-white hover:bg-orange-700 disabled:opacity-60">
+          Send inquiry
+        </button>
+        <p data-status role="status" aria-live="polite" hidden class="rounded-lg px-3 py-2 text-sm ring-1"></p>
+      </form>
+    </main>
+    <script src="formroost.js" defer></script>
+  </body>
+</html>

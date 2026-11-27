@@ -7,6 +7,10 @@ Copy-paste starters for [FormRoost](https://formroost.com), the hosted form back
 | [`astro-contact`](./astro-contact) | Astro, TypeScript, Tailwind CSS | Progressive-enhancement contact form |
 | [`nextjs-contact`](./nextjs-contact) | Next.js App Router, TypeScript, Tailwind CSS | Browser form **and** a server Route Handler with an API key |
 | [`html-tailwind-contact`](./html-tailwind-contact) | One HTML file, vanilla JS, Tailwind | No build step |
+| [`small-business-quote`](./small-business-quote) | HTML, vanilla JS, Tailwind | Local service "Request a quote" form |
+| [`coach-booking-inquiry`](./coach-booking-inquiry) | HTML, vanilla JS, Tailwind | Dark-mode discovery call inquiry form |
+| [`product-waitlist`](./product-waitlist) | HTML, vanilla JS, Tailwind | Early-access waitlist signup form |
+| [`portfolio-inquiry`](./portfolio-inquiry) | HTML, vanilla JS, Tailwind | Creative/photographer shoot booking form |
 | [`webhook-receiver-node`](./webhook-receiver-node) | Node.js 20+, zero dependencies | Standard Webhooks signature check |
 
 ## Sandbox first
@@ -93,6 +97,7 @@ Verify the raw bytes before parsing JSON, deduplicate on `webhook-id` (delivery 
 ## Links
 
 - [formroost.com](https://formroost.com)
+- [AI Website Builder Guides (Lovable, Bolt, Replit, v0, ChatGPT, Claude)](https://formroost.com/guides)
 - [Documentation](https://formroost.com/docs)
 - [Submission API](https://formroost.com/docs/api/submissions)
 - [Signed webhooks](https://formroost.com/docs/webhooks)
